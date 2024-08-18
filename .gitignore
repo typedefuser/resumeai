@@ -1,0 +1,58 @@
+# Ignore node_modules directory for Vite
+frontend/node_modules/
+
+# Ignore build output for Vite
+frontend/dist/
+
+# Ignore environment files
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+
+# Ignore Tailwind CSS build artifacts
+frontend/public/css/tailwind.css
+frontend/src/styles/tailwind.generated.css
+
+# Ignore IntelliJ IDEA project files
+*.iml
+.idea/
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore log files and database
+*.log
+*.sqlite
+
+# Ignore target directory for Spring Boot
+backend/target/
+
+# Ignore Maven and Gradle build directories
+backend/.mvn/
+backend/.gradle/
+backend/build/
+
+# Ignore IDE-specific directories for the backend
+backend/.idea/
+backend/*.iml
+backend/.project
+backend/.classpath
+
+# Ignore application properties
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-dev.properties
+backend/src/main/resources/application-prod.properties
+
+# Ignore JAR/WAR files
+backend/*.jar
+backend/*.war
+
+# Ignore temporary files and logs
+*.tmp
+*.log
+
+
+#ignore pdf files
+backend/reg2.pdf
+backend/ragmaterial.pdf

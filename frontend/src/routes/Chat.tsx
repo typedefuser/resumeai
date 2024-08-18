@@ -1,0 +1,101 @@
+import React, { useState, useEffect } from 'react';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+
+interface ChatMessage {
+  type: 'response' | 'stream' | 'error' | 'streamComplete' | 'info';
+  content: string;
+}
+
+const ChatComponent: React.FC = () => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState('');
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+
+  useEffect(() => {
+    const socket = new SockJS('https://app-prod-latest.onrender.com/ws/chat'); // Ensure this URL matches your WebSocket configuration
+    const client = new Client({
+      webSocketFactory: () => socket,
+      onConnect: (frame) => {
+        console.log('Connected: ' + frame);
+        client.subscribe('/topic/messages', (message) => {
+          console.log('Received message:', message.body);
+          
+          // Check if the message starts with 'generation:'
+          if (message.body.startsWith('generation:')) {
+            const content = message.body.substring('generation:'.length);
+            setMessages((prevMessages) => [...prevMessages, { type: 'response', content }]);
+          } else {
+            try {
+              const payload = JSON.parse(message.body);
+              if (payload && typeof payload === 'object' && 'type' in payload && 'content' in payload) {
+                setMessages((prevMessages) => [...prevMessages, payload as ChatMessage]);
+              } else {
+                console.error('Invalid message format:', payload);
+                setMessages((prevMessages) => [...prevMessages, { type: 'error', content: 'Received invalid message format' }]);
+              }
+            } catch (e) {
+              console.error('Failed to parse message body:', e);
+              setMessages((prevMessages) => [...prevMessages, { type: 'response', content: message.body }]);
+            }
+          }
+        });
+      },
+      onStompError: (frame) => {
+        console.error('STOMP error:', frame);
+      },
+    });
+    
+
+    client.activate();
+    setStompClient(client);
+
+    return () => {
+      if (client.active) {
+        client.deactivate();
+      }
+    };
+  }, []);
+
+  const handleSendMessage = () => {
+    if (stompClient && input.trim() !== '') {
+      stompClient.publish({ 
+        destination: '/app/chat', 
+        body: `generate:${input}` // Send the input as a string starting with "generate:"
+      });
+      console.log('Message sent:', input); // Log sent message
+      setInput('');
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-screen max-w-md mx-auto bg-gray-100 rounded-lg shadow-md">
+      <div className="flex-1 p-4 overflow-y-auto bg-white border-b border-gray-300">
+        {messages.map((msg, index) => (
+          <div key={index} className={`p-2 mb-2 rounded-lg ${msg.type === 'error' ? 'bg-red-100' : 'bg-blue-100'}`}>
+            <p className={`text-gray-700 ${msg.type === 'error' ? 'text-red-700' : ''}`}>{msg.content}</p>
+          </div>
+        ))}
+      </div>
+      <div className="p-4 bg-gray-200 border-t border-gray-300">
+        <div className="flex">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message"
+            className="flex-1 p-2 border border-gray-300 rounded-lg"
+          />
+          <button
+            onClick={handleSendMessage}
+            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatComponent;
