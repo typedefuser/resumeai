@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import Formview from "../components/Formview";
 import Navbar from "../components/Navbar";
 import PdfViewer from "../components/PdfViewer";
-import { generatePdf } from '../components/pdfGenerator';
+import { generatePdf } from '../services/pdfGenerator';
 import { Formdata } from "../types";
+import Pdfupload from "../components/Pdfupload";
 
 const Home = (): JSX.Element => {
   const [formData, setFormData] = useState<Formdata>({
@@ -56,7 +57,10 @@ const Home = (): JSX.Element => {
       <main className="pt-20 container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-4">Create and View PDF</h1>
         {view ? (
+          <>
+          <Pdfupload formdata={formData} onFormChange={handleFormChange} onSectionsChange={handleSectionsChange} />
           <Formview formdata={formData} onFormChange={handleFormChange} onSectionsChange={handleSectionsChange} />
+          </>
         ) : (pdfBytes ? (
           <PdfViewer pdfBytes={pdfBytes} />
         ) : (

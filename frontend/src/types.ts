@@ -4,10 +4,10 @@ personaldetails?:{
     lastname?: string;
     email?: string;
     phoneno?: string;
-    summary?: string; // A brief summary or objective statement
-    linkedin?: string; // LinkedIn profile URL
-    github?: string; // GitHub profile URL
-    portfolio?: string; // Portfolio or personal website URL
+    summary?: string;
+    linkedin?: string; 
+    github?: string; 
+    portfolio?: string; 
 }
     address?: {
         street?: string;
@@ -20,15 +20,15 @@ personaldetails?:{
         institutionName?: string;
         degree?: string;
         fieldOfStudy?: string;
-        startDate?: string; // Consider using ISO date strings
-        endDate?: string;   // Consider using ISO date strings
+        startDate?: string; 
+        endDate?: string;   
         grade?: string;
     }>;
     experience?: Array<{
         companyName?: string;
         jobTitle?: string;
-        startDate?: string; // Consider using ISO date strings
-        endDate?: string;   // Consider using ISO date strings
+        startDate?: string; 
+        endDate?: string;  
         responsibilities?: string[];
         achievements?: string[];
     }>;
@@ -36,16 +36,15 @@ personaldetails?:{
     certifications?: Array<{
         certificationName?: string;
         issuingOrganization?: string;
-        issueDate?: string; // Consider using ISO date strings
-        expirationDate?: string; // Consider using ISO date strings
+        issueDate?: string; 
     }>;
     projects?: Array<{
         projectName?: string;
         description?: string;
         technologiesUsed?: string[];
-        startDate?: string; // Consider using ISO date strings
-        endDate?: string;   // Consider using ISO date strings
-        link?: string; // URL to the project or portfolio
+        startDate?: string; 
+        endDate?: string; 
+        link?: string; 
     }>;
     languages?: Array<{
         language?: string;

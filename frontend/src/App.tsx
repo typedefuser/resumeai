@@ -1,4 +1,4 @@
-import './App.css'
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Home from './routes/home'
 import ChatComponent from './routes/Chat'
