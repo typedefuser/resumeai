@@ -13,7 +13,9 @@ const ChatComponent: React.FC = () => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
 
   useEffect(() => {
-    const socket = new SockJS('https://app-prod-latest.onrender.com/ws/chat'); // Ensure this URL matches your WebSocket configuration
+    //const prod= 'https://app-prod-latest.onrender.com/ws/chat';
+    const dev= 'http://localhost:8080/ws/chat'
+    const socket = new SockJS(dev); // Ensure this URL matches your WebSocket configuration
     const client = new Client({
       webSocketFactory: () => socket,
       onConnect: (frame) => {
