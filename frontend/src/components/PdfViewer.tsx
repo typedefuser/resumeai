@@ -1,28 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ZoomIn, ZoomOut, Maximize,Download } from 'lucide-react';
+//import { Button } from '../components/ui/button';
 
 interface PdfViewerProps {
   pdfBytes: Uint8Array;
 }
 
+interface ToolbarButtonProps {
+  icon: React.ElementType;
+  onClick: () => void;
+}
+
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({ icon: Icon, onClick }) => (
+  <button
+    onClick={onClick}
+    className="w-8 h-8 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-full transition-colors duration-200"
+  >
+    <Icon size={18} color="white" />
+  </button>
+);
+
 const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState<string | null>(null);
-  const [scale, setScale] = useState<number>(1); // Initial zoom scale
+  const [scale, setScale] = useState<number>(0.75);
   const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const isRendering = useRef(false); // Flag to track rendering state
-  const isDragging = useRef(false); // Flag to track dragging state
-  const startDrag = useRef<{ x: number; y: number } | null>(null); // Start position for dragging
+  const isRendering = useRef(false);
+  const isDragging = useRef(false);
+  const startDrag = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const loadPdf = async () => {
-      if (isRendering.current) return; // Prevent new render if one is in progress
-      isRendering.current = true; // Set rendering flag
+      if (isRendering.current) return;
+      isRendering.current = true;
 
       try {
         const pdfjsLib = (window as any).pdfjsLib;
-
-        // Set the worker source
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
 
         if (!containerRef.current || !canvasRef.current) return;
@@ -32,28 +46,24 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
 
         const containerWidth = containerRef.current.clientWidth;
         const containerHeight = containerRef.current.clientHeight;
-        const a4Width = 210; // A4 width in mm
-        const a4Height = 297; // A4 height in mm
+        const a4Width = 210;
+        const a4Height = 297;
 
-        const a4WidthPx = (a4Width / 25.4) * 72; // Convert mm to points (1 point = 1/72 inch)
+        const a4WidthPx = (a4Width / 25.4) * 72;
         const a4HeightPx = (a4Height / 25.4) * 72;
 
-        // Calculate the scale factor to fit the height of the container
         const scaleFactor = containerHeight / a4HeightPx;
-        const resolutionScale = 2; // Higher resolution for better quality
-        const effectiveScale = scaleFactor * resolutionScale;
+        const resolutionScale = 2;
+        const effectiveScale = scaleFactor * resolutionScale * scale;
 
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
 
         if (context) {
           canvas.height = containerHeight;
-          canvas.width = containerHeight * a4WidthPx / a4HeightPx; // Maintain aspect ratio
+          canvas.width = containerHeight * a4WidthPx / a4HeightPx;
 
-          // Center the canvas horizontally
           const canvasWidth = canvas.width;
-          const canvasHeight = canvas.height;
-
           const containerCenterX = containerWidth / 2;
           const contentCenterX = canvasWidth / 2;
 
@@ -73,14 +83,14 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
               viewport,
             };
 
-            await page.render(renderContext).promise; // Wait for the render to complete
+            await page.render(renderContext).promise;
           }
         }
       } catch (error) {
         console.error('Error rendering PDF:', error);
         setError('Failed to render PDF. Please try again.');
       } finally {
-        isRendering.current = false; // Reset rendering flag
+        isRendering.current = false;
       }
     };
 
@@ -88,7 +98,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
   }, [pdfBytes, scale]);
 
   const handleWheel = (event: React.WheelEvent) => {
-    const newScale = Math.max(0.1, scale + event.deltaY * -0.001); // Adjust zoom factor
+    const newScale = Math.max(0.1, scale + event.deltaY * -0.001);
     setScale(newScale);
   };
 
@@ -116,31 +126,61 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
     startDrag.current = null;
   };
 
+  const handleZoomIn = () => setScale(prevScale => Math.min(prevScale + 0.1, 3));
+  const handleZoomOut = () => setScale(prevScale => Math.max(prevScale - 0.1, 0.1));
+  const handleReset = () => {
+    setScale(0.75);
+    setOffset({ x: 0, y: 0 });
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'document.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative overflow-hidden bg-black"
-      style={{ width: '100%', height: '80vh' }} // Adjust height as needed
-      onWheel={handleWheel}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      <canvas
-        ref={canvasRef}
-        className="relative"
-        style={{
-          transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
-          transformOrigin: '0 0',
-          cursor: 'grab',
-        }}
+    <div className="fixed top-16 right-0 w-1/2 h-[calc(100vh-4rem)] bg-black shadow-lg overflow-hidden flex flex-col">
+      <div className="bg-blue-400 p-4 shadow-md">
+        <h2 className="text-xl font-semibold text-center">PDF Viewer</h2>
+      </div>
+      <div
+        ref={containerRef}
+        className="flex-grow relative bg-black overflow-hidden"
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
-        {/* PDF pages will be dynamically added here */}
-      </canvas>
+        <canvas
+          ref={canvasRef}
+          className="absolute transition-transform duration-100 ease-out"
+          style={{
+            transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+            transformOrigin: '0 0',
+            cursor: isDragging.current ? 'grabbing' : 'grab',
+          }}
+        />
+      </div>
+      <div className="flex items-center space-x-2 bg-gray-900 p-1  rounded-full">
+  
+      <ToolbarButton icon={ZoomIn} onClick={handleZoomIn} />
+      <ToolbarButton icon={ZoomOut} onClick={handleZoomOut} />
+      <ToolbarButton icon={Maximize} onClick={handleReset} />
+      <ToolbarButton icon={Download} onClick={handleDownload} />
+      Zoom: {(scale * 100).toFixed(0)}%
+    </div>
     </div>
   );
 };

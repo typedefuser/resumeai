@@ -58,8 +58,8 @@ const Home = (): JSX.Element => {
         <h1 className="text-3xl font-bold mb-4">Create and View PDF</h1>
         {view ? (
           <>
-          <Pdfupload formdata={formData} onFormChange={handleFormChange} onSectionsChange={handleSectionsChange} />
-          <Formview formdata={formData} onFormChange={handleFormChange} onSectionsChange={handleSectionsChange} />
+          <Pdfupload formdata={formData} onFormChange={handleFormChange} onSectionsChange={handleSectionsChange} generatePDF={(formData) => generatePdf(formData, sections)}/>
+          <Formview formdata={formData} onFormChange={handleFormChange} onSectionsChange={handleSectionsChange} generatePDF={(formData) => generatePdf(formData, sections)} />
           </>
         ) : (pdfBytes ? (
           <PdfViewer pdfBytes={pdfBytes} />

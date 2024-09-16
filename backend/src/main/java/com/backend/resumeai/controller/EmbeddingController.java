@@ -1,46 +1,56 @@
 package com.backend.resumeai.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.embedding.EmbeddingResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
+import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.model.azure.AzureOpenAiEmbeddingModel;
+import dev.langchain4j.model.output.Response;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 public class EmbeddingController {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmbeddingController.class);
+    private final AzureOpenAiEmbeddingModel model;
 
-    private final EmbeddingModel embeddingModel;
+    // Constructor-based dependency injection
+    public EmbeddingController(
+            @Value("${langchain4j.azure-open-ai.embedding-model.api-key}") String apiKey,
+            @Value("${langchain4j.azure-open-ai.embedding-model.deployment-name}") String deploymentName,
+            @Value("${langchain4j.azure-open-ai.embedding-model.endpoint}") String endpoint,
+            @Value("${langchain4j.azure-open-ai.embedding-model.api-version}") String serviceVersion ){
 
-    @Autowired
-    public EmbeddingController(@Qualifier("azureOpenAiEmbeddingModel") EmbeddingModel embeddingModel) {
-        this.embeddingModel = embeddingModel;
+        this.model = AzureOpenAiEmbeddingModel.builder()
+                .apiKey(apiKey)
+                .endpoint(endpoint)
+                .deploymentName(deploymentName)
+                .serviceVersion(serviceVersion)
+                .logRequestsAndResponses(true)
+                .build();
     }
 
-    @GetMapping("/ai/embedding")
-    @ResponseBody
-    public Map<String, EmbeddingResponse> embed(@RequestParam(value = "input", defaultValue = "Tell me a joke") String message) {
+    @PostMapping("/embed")
+    public ResponseEntity<String> embedSentence(
+            @RequestParam(defaultValue = "Please embed this sentence.") String sentence) {
 
-        logger.info("Received request to /ai/embedding with input: {}", message);
+        // Validate the input sentence if necessary
+        if (sentence == null || sentence.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        try {
-            EmbeddingResponse embeddingResponse = this.embeddingModel.embedForResponse(List.of(message));
+        // Call the model to embed the sentence
+        Response<Embedding> response = model.embed(sentence);
 
-            logger.info("Embedding response: {}", embeddingResponse);
-
-            return Map.of("embedding", embeddingResponse);
-        } catch (Exception e) {
-            logger.error("Error generating embedding: {}", e.getMessage(), e);
-            throw e;
+        // Check for the content in the response
+        if (response.content() != null) {
+            Embedding embedding = response.content();
+            return ResponseEntity.ok(embedding.toString());
+        } else {
+            // Handle cases where the content might be null or other issues
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);  // Or handle as needed
         }
     }
 }

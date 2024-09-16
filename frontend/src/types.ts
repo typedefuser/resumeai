@@ -59,13 +59,14 @@ export interface FormviewProps{
     formdata:Formdata;
     onFormChange:(data:Formdata)=>void;
     onSectionsChange: (sections: string[]) => void;
+    generatePDF: (formdata:Formdata) => void; // Add this line
 }
 
 export interface PdfViewerProps {
     pdfBytes: Uint8Array;
   }
 
-  // Define this in a separate file or at the top of your Formview component file
+ 
 export const FORM_SECTIONS: string[] = [
     'personaldetails',
     'address',
@@ -133,4 +134,3 @@ export const FORM_SECTIONS: string[] = [
       { name: 'proficiency', placeholder: 'Proficiency' }
     ]
   };
-  
