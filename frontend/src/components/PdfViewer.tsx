@@ -151,9 +151,6 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
 
   return (
     <div className="fixed top-16 right-0 w-1/2 h-[calc(100vh-4rem)] bg-black shadow-lg overflow-hidden flex flex-col">
-      <div className="bg-blue-400 p-4 shadow-md">
-        <h2 className="text-xl font-semibold text-center">PDF Viewer</h2>
-      </div>
       <div
         ref={containerRef}
         className="flex-grow relative bg-black overflow-hidden"
@@ -173,7 +170,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
           }}
         />
       </div>
-      <div className="flex items-center space-x-2 bg-gray-900 p-1  rounded-full">
+      <div className="flex items-center  pl-10 w-1/2 space-x-2 bg-gray-900 p-1  rounded-full">
   
       <ToolbarButton icon={ZoomIn} onClick={handleZoomIn} />
       <ToolbarButton icon={ZoomOut} onClick={handleZoomOut} />

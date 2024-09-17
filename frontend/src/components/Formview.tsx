@@ -1,5 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import { FORM_SECTIONS, FormviewProps, SUBTYPE_FIELDS, Formdata } from '../types';
+import { Button } from './ui/button';
+import { DatePicker } from './DatePicker'
+
 
 const Formview: React.FC<FormviewProps> = ({ formdata, onFormChange, generatePDF }) => {
   useEffect(() => {
@@ -29,6 +32,29 @@ const Formview: React.FC<FormviewProps> = ({ formdata, onFormChange, generatePDF
     onFormChange(newFormData);
   }, [formdata, onFormChange]);
 
+  const handleDeleteInstance = useCallback((section: string) => {
+    const newFormData: Formdata = {
+      ...formdata,
+      [section]: formdata[section].slice(0, -1),
+    };
+    onFormChange(newFormData);
+  }, [formdata, onFormChange]);
+
+  const handleDateChange = useCallback((date: Date | null, name: string) => {
+    const [section, field, index] = name.split('.');
+    const formattedDate = date ? date.toISOString().split('T')[0] : '';
+
+    if (section in formdata) {
+      const newFormData: Formdata = {
+        ...formdata,
+        [section]: Array.isArray(formdata[section])
+          ? formdata[section].map((item, i) => i === parseInt(index) ? { ...item, [field]: formattedDate } : item)
+          : { ...formdata[section], [field]: formattedDate },
+      };
+      onFormChange(newFormData);
+    }
+  }, [formdata, onFormChange]);
+
   const renderInputs = useCallback((section: string) => {
     const fields = SUBTYPE_FIELDS[section] || [];
     const sectionData = formdata[section] || [];
@@ -39,15 +65,22 @@ const Formview: React.FC<FormviewProps> = ({ formdata, onFormChange, generatePDF
           {fields.map(({ name, placeholder }) => (
             <div key={`${section}-${index}-${name}`}>
               <label htmlFor={`${section}-${index}-${name}`} className="sr-only">{placeholder}</label>
-              <input
-                id={`${section}-${index}-${name}`}
-                type="text"
-                name={`${section}.${name}.${index}`}
-                value={item[name] || ''}
-                onChange={handleChange}
-                placeholder={placeholder}
-                className="w-full mb-2 p-2 bg-gray-100 text-gray-800 rounded"
-              />
+              {(section === 'education' || section === 'experience') && (name === 'startDate' || name === 'endDate') ? (
+                <DatePicker
+                  date={item[name] ? new Date(item[name]) : undefined}
+                  onDateChange={(date) => handleDateChange(date, `${section}.${name}.${index}`)}
+                />
+              ) : (
+                <input
+                  id={`${section}-${index}-${name}`}
+                  type="text"
+                  name={`${section}.${name}.${index}`}
+                  value={item[name] || ''}
+                  onChange={handleChange}
+                  placeholder={placeholder}
+                  className="w-full mb-2 p-2 bg-gray-100 text-gray-800 rounded"
+                />
+              )}
             </div>
           ))}
         </div>
@@ -68,7 +101,7 @@ const Formview: React.FC<FormviewProps> = ({ formdata, onFormChange, generatePDF
         </div>
       ));
     }
-  }, [formdata, handleChange]);
+  }, [formdata, handleChange, handleDateChange]);
 
   return (
     <div className="space-y-4">
@@ -77,13 +110,19 @@ const Formview: React.FC<FormviewProps> = ({ formdata, onFormChange, generatePDF
           <h2 className="text-lg font-semibold text-gray-800">{section}</h2>
           {renderInputs(section)}
           {Array.isArray(formdata[section]) && (
-            <button
+            <><Button
               type="button"
               onClick={() => handleAddInstance(section)}
               className="mt-2 p-2 bg-blue-500 text-white rounded"
             >
               Add {section}
-            </button>
+            </Button><Button
+              type="button"
+              onClick={() => handleDeleteInstance(section)}
+              className="mt-2 p-2 bg-red-500 text-white rounded"
+            >
+                Delete {section}
+              </Button></>
           )}
         </div>
       ))}
