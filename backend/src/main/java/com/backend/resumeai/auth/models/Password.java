@@ -1,21 +1,20 @@
-package com.backend.resumeai.models;
+package com.backend.resumeai.auth.models;
 
 import jakarta.persistence.*;
-import com.backend.resumeai.models.User;
 
 @Entity
 @Table(name = "passwords")
 public class Password {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = false,unique = true)
     private User user;
 
     @Column(nullable = false)
     private String hashedPassword;
-
-    @Column(nullable = false)
-    private String salt;
 
     // Getters and setters
 
@@ -35,11 +34,11 @@ public class Password {
         this.hashedPassword = hashedPassword;
     }
 
-    public String getSalt() {
-        return salt;
+    public Long getId() {
+        return id;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
