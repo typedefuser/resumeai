@@ -1,14 +1,16 @@
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Home from './routes/home'
-import ChatComponent from './routes/Chat'
+import AuthPage from './routes/auth'
+import Dashboard from './routes/dashboard'
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/chat" element={<ChatComponent />} />
+        <Route path="/" element={<AuthPage />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
   )

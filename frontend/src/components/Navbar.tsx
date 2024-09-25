@@ -1,34 +1,44 @@
 // Navbar.tsx
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { FileText } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { Button } from "./ui/button"
 
-const Navbar = (): JSX.Element => {
+const Navbar = ()=> {
     
-  const navItems = [
-    { name: 'Home', href: '#home' }
-  ];
   
   return (
-    <nav className="bg-black bg-opacity-80 rounded-xl backdrop-blur-md p-4 fixed top-1 w-full z-10 shadow">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Logo */}
-        <div className="text-white text-xl font-bold">
-          <a href="/">MyLogo</a>
+    <nav className="bg-white shadow-sm">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between h-16">
+        <div className="flex">
+          <div className="flex-shrink-0 flex items-center">
+            <FileText className="h-8 w-8 text-blue-500" />
+            <span className="ml-2 text-2xl font-bold text-gray-900">ResumeAI</span>
+          </div>
         </div>
-        
-        {/* Navigation Links */}    
-        <ul className="flex space-x-4">
-          {navItems.map((item) => (
-            <li key={item.name}>
-              <a 
-                href={item.href} 
-                className="text-white backdrop-blur-2xl bg-zinc-950 z-10 rounded-2xl p-2"
-              >
-                <span>{item.name}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-    </nav>
+    </div>
+  </nav>
   );
 }
 

@@ -1,10 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ZoomIn, ZoomOut, Maximize,Download } from 'lucide-react';
-//import { Button } from '../components/ui/button';
-
-interface PdfViewerProps {
-  pdfBytes: Uint8Array;
-}
+import React, { useState, useEffect, useRef } from 'react';
+import { ZoomIn, ZoomOut, Maximize, Download } from 'lucide-react';
 
 interface ToolbarButtonProps {
   icon: React.ElementType;
@@ -20,10 +15,14 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ icon: Icon, onClick }) =>
   </button>
 );
 
+interface PdfViewerProps {
+  pdfBytes: Uint8Array | null;
+}
+
 const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [_, setError] = useState<string | null>(null);
   const [scale, setScale] = useState<number>(0.75);
   const [offset, setOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const isRendering = useRef(false);
@@ -32,7 +31,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
 
   useEffect(() => {
     const loadPdf = async () => {
-      if (isRendering.current) return;
+      if (!pdfBytes || isRendering.current) return;
       isRendering.current = true;
 
       try {
@@ -134,6 +133,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
   };
 
   const handleDownload = () => {
+    if (!pdfBytes) return;
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -145,39 +145,42 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ pdfBytes }) => {
     URL.revokeObjectURL(url);
   };
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
   return (
-    <div className="fixed top-16 right-0 w-1/2 h-[calc(100vh-4rem)] bg-black shadow-lg overflow-hidden flex flex-col">
-      <div
-        ref={containerRef}
-        className="flex-grow relative bg-black overflow-hidden"
-        onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <canvas
-          ref={canvasRef}
-          className="absolute transition-transform duration-100 ease-out"
-          style={{
-            transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
-            transformOrigin: '0 0',
-            cursor: isDragging.current ? 'grabbing' : 'grab',
-          }}
-        />
-      </div>
-      <div className="flex items-center  pl-10 w-1/2 space-x-2 bg-gray-900 p-1  rounded-full">
-  
-      <ToolbarButton icon={ZoomIn} onClick={handleZoomIn} />
-      <ToolbarButton icon={ZoomOut} onClick={handleZoomOut} />
-      <ToolbarButton icon={Maximize} onClick={handleReset} />
-      <ToolbarButton icon={Download} onClick={handleDownload} />
-      Zoom: {(scale * 100).toFixed(0)}%
-    </div>
+    <div className="flex flex-col h-full bg-black shadow-lg overflow-hidden">
+      {pdfBytes ? (
+        <>
+          <div
+            ref={containerRef}
+            className="flex-grow relative bg-black overflow-hidden"
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            <canvas
+              ref={canvasRef}
+              className="absolute transition-transform duration-100 ease-out"
+              style={{
+                transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+                transformOrigin: '0 0',
+                cursor: isDragging.current ? 'grabbing' : 'grab',
+              }}
+            />
+          </div>
+          <div className="flex items-center justify-center space-x-2 bg-gray-900 p-2">
+            <ToolbarButton icon={ZoomIn} onClick={handleZoomIn} />
+            <ToolbarButton icon={ZoomOut} onClick={handleZoomOut} />
+            <ToolbarButton icon={Maximize} onClick={handleReset} />
+            <ToolbarButton icon={Download} onClick={handleDownload} />
+            <span className="text-white">Zoom: {(scale * 100).toFixed(0)}%</span>
+          </div>
+        </>
+      ) : (
+        <div className="flex items-center justify-center h-full text-white">
+          No PDF loaded
+        </div>
+      )}
     </div>
   );
 };

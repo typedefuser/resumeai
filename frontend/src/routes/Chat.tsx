@@ -7,14 +7,13 @@ interface ChatMessage {
   content: string;
 }
 
-const ChatComponent: React.FC = () => {
+const Chat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [stompClient, setStompClient] = useState<Client | null>(null);
 
   useEffect(() => {
-    //const prod= 'https://app-prod-latest.onrender.com/ws/chat';
-    const dev= 'http://localhost:8080/ws/chat'
+    const dev = 'http://localhost:8080/ws/chat';
     const socket = new SockJS(dev);
     const client = new Client({
       webSocketFactory: () => socket,
@@ -23,7 +22,6 @@ const ChatComponent: React.FC = () => {
         client.subscribe('/topic/messages', (message) => {
           console.log('Received message:', message.body);
           
-          // Check if the message starts with 'generation:'
           if (message.body.startsWith('generation:')) {
             const content = message.body.substring('generation:'.length);
             setMessages((prevMessages) => [...prevMessages, { type: 'response', content }]);
@@ -48,7 +46,6 @@ const ChatComponent: React.FC = () => {
       },
     });
     
-
     client.activate();
     setStompClient(client);
 
@@ -63,34 +60,35 @@ const ChatComponent: React.FC = () => {
     if (stompClient && input.trim() !== '') {
       stompClient.publish({ 
         destination: '/app/chat', 
-        body: `generate:${input}` // Send the input as a string starting with "generate:"
+        body: `generate:${input}`
       });
-      console.log('Message sent:', input); // Log sent message
+      console.log('Message sent:', input);
       setInput('');
     }
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto bg-gray-100 rounded-lg shadow-md">
-      <div className="flex-1 p-4 overflow-y-auto bg-white border-b border-gray-300">
+    <div className="flex flex-col h-screen bg-white border-r border-gray-300 shadow-lg">
+      <div className="flex-1 p-4 overflow-y-auto">
         {messages.map((msg, index) => (
           <div key={index} className={`p-2 mb-2 rounded-lg ${msg.type === 'error' ? 'bg-red-100' : 'bg-blue-100'}`}>
-            <p className={`text-gray-700 ${msg.type === 'error' ? 'text-red-700' : ''}`}>{msg.content}</p>
+            <p className={`text-sm ${msg.type === 'error' ? 'text-red-700' : 'text-gray-700'}`}>{msg.content}</p>
           </div>
         ))}
       </div>
-      <div className="p-4 bg-gray-200 border-t border-gray-300">
+      <div className="p-4 bg-gray-50 border-t border-gray-200">
         <div className="flex">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="Type a message"
-            className="flex-1 p-2 border border-gray-300 rounded-lg"
+            className="flex-1 p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleSendMessage}
-            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+            className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Send
           </button>
@@ -100,4 +98,4 @@ const ChatComponent: React.FC = () => {
   );
 };
 
-export default ChatComponent;
+export default Chat;
