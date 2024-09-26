@@ -2,21 +2,12 @@ package com.backend.resumeai.auth.models;
 
 public class UserDTO {
 
-    private String userId;
     private String email;
     private String firstname;
     private String lastname;
     private String password;  // Include password here
 
     // Getters and setters
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getEmail() {
         return email;

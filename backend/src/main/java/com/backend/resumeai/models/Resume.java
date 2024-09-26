@@ -10,13 +10,15 @@ import java.util.Set;
 @Table(name = "resumes")
 public class Resume {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "resume_id",nullable = false,unique = true)
-    private String resumeId;
+    private Long resumeId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    private String resumeName;
     private String summary;
     private String linkedin;
     private String github;
@@ -49,12 +51,20 @@ public class Resume {
     // Getters and setters
 
 
-    public String getResumeId() {
+    public Long getResumeId() {
         return resumeId;
     }
 
-    public void setResumeId(String resumeId) {
+    public void setResumeId(Long resumeId) {
         this.resumeId = resumeId;
+    }
+
+    public String getResumeName() {
+        return resumeName;
+    }
+
+    public void setResumeName(String resumeName) {
+        this.resumeName = resumeName;
     }
 
     public Set<Project> getProjects() {

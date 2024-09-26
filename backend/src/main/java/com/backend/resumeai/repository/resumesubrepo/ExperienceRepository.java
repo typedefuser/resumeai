@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ExperienceRepository extends JpaRepository<Experience, String> {
-    List<Experience> findByResume_ResumeId(String resumeId);
+public interface ExperienceRepository extends JpaRepository<Experience, Long> {
+    List<Experience> findByResume_ResumeId(Long resumeId);
 }

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LanguageRepository extends JpaRepository<Language, String> {
-    List<Language> findByResume_ResumeId(String resumeId);
+public interface LanguageRepository extends JpaRepository<Language, Long> {
+    List<Language> findByResume_ResumeId(Long resumeId);
 }
