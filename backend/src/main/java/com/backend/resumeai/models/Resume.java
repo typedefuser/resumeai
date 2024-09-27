@@ -2,8 +2,11 @@ package com.backend.resumeai.models;
 
 import com.backend.resumeai.auth.models.User;
 import com.backend.resumeai.models.resumesubfields.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -14,7 +17,9 @@ public class Resume {
     @Column(name = "resume_id",nullable = false,unique = true)
     private Long resumeId;
 
+
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -29,27 +34,42 @@ public class Resume {
     private String state;
     private String postalCode;
     private String country;
+    private LocalDate lastModified;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Education> educations;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Experience> experiences;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Skill> skills;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Certification> certifications;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Project> projects;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Language> languages;
 
     // Getters and setters
 
+
+    public LocalDate getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(LocalDate lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public Long getResumeId() {
         return resumeId;

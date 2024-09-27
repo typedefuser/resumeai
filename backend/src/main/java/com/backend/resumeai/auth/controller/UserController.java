@@ -44,6 +44,16 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String,Object>> LogoutUSer(@RequestHeader("Authorization") String token){
+        Map<String,Object> response=new HashMap<>();
+        String jwtToken=token.substring(7);
+        jwtUtil.blacklistToken(jwtToken);
+        response.put("success",true);
+        response.put("message","LOGOUT SUCCESSFUL");
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/all")
     public  ResponseEntity<List<User>> getAll(){
         List<User> users=userService.getAll();

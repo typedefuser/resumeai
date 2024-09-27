@@ -8,16 +8,15 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.Base64;
 
 @Component
 public class JwtUtil {
 
     private final String SECRET_KEY = "Z55NFhmhDZULhxJwYMHYyrU6CAbSXOOak1bEWH3iEOMFe2s97sTSIgyA3VS7TrwG";
+    private final Set<String> blacklistedTokens = ConcurrentHashMap.newKeySet();
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -67,6 +66,13 @@ public class JwtUtil {
 
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+        return (extractedUsername.equals(username) && !isTokenExpired(token) &&!isTokenBlacklisted(token));
+    }
+
+    public void blacklistToken(String jwtToken) {
+        blacklistedTokens.add(jwtToken);
+    }
+    public Boolean isTokenBlacklisted(String token) {
+        return blacklistedTokens.contains(token);
     }
 }

@@ -1,6 +1,7 @@
 package com.backend.resumeai.models.resumesubfields;
 
 import com.backend.resumeai.models.Resume;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class Certification {
 
     @ManyToOne
     @JoinColumn(name = "resume_id", nullable = false)
+    @JsonBackReference
     private Resume resume;
 
     private String certificationName;

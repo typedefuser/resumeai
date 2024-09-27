@@ -1,4 +1,5 @@
 package com.backend.resumeai.models.resumesubfields;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import  jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name = "resume_id", nullable = false)
+    @JsonBackReference
     private Resume resume;
 
     private String projectName;

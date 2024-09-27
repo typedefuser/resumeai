@@ -1,5 +1,6 @@
 package com.backend.resumeai.models.resumesubfields;
 import com.backend.resumeai.models.Resume;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class Language {
 
     @ManyToOne
     @JoinColumn(name = "resume_id", nullable = false)
+    @JsonBackReference
     private Resume resume;
 
     private String language;
