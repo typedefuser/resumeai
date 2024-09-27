@@ -3,7 +3,7 @@ import Formview from "../components/Formview";
 import Navbar from "../components/Navbar";
 import PdfViewer from "../components/PdfViewer";
 import { generatePdf } from '../services/pdfGenerator';
-import { Formdata,FORM_SECTIONS } from "../types";
+import { Formdata } from "../types";
 import Pdfupload from "../components/Pdfupload";
 import Chat from "./Chat";
 

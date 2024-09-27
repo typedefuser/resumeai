@@ -10,7 +10,6 @@ export const generatePdf = async (formData: Formdata, sections: string[]) => {
   const page = pdfDoc.addPage(pageSize);
   const { width, height } = page.getSize();
   const margin = 50;
-  const contentWidth = width - 2 * margin;
 
   let y = height - margin;
 
