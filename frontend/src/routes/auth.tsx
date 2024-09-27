@@ -1,23 +1,34 @@
-
 import { useState } from 'react'
 import { Button } from "../components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
+import {login,LoginData,SignupData} from '../services/apiservices/loginservice'
+import { useNavigate } from 'react-router-dom'
+import {Login_Error} from '../types'
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
-  const [loginData, setLoginData] = useState({
+  const [_, setError] = useState<Login_Error>({
+    errors:[],
+    message:'',
+    status:'',
+    timestamp:''
+  })
+
+
+  const [loginData, setLoginData] = useState<LoginData>({
     email: '',
     password: ''
   })
-  const [signupData, setSignupData] = useState({
-    firstName: '',
-    lastName: '',
+  const [signupData, setSignupData] = useState<SignupData>({
+    firstname: '',
+    lastname: '',
     email: '',
     password: ''
   })
+  const navigate = useNavigate();
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -37,29 +48,16 @@ export default function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const endpoint = isLogin ? '/api/login' : '/api/signup'
     const data = isLogin ? loginData : signupData
-    
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      
-      if (response.ok) {
-        const result = await response.json()
-        console.log('Success:', result)
-        // Handle successful login/signup (e.g., store token, redirect)
-      } else {
-        console.error('Error:', response.statusText)
-        // Handle errors (e.g., show error message to user)
-      }
+        const result = await login(data, isLogin);
+        if(result.token){
+          localStorage.setItem('token', result.token);
+        }
+        
+        isLogin?navigate('/dashboard'):!isLogin;
     } catch (error) {
-      console.error('Error:', error)
-      // Handle network errors
+      setError(error as Login_Error);
     }
   }
 
@@ -113,9 +111,9 @@ export default function AuthPage() {
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
-                    name="firstName"
+                    name="firstname"
                     placeholder="John"
-                    value={signupData.firstName}
+                    value={signupData.firstname}
                     onChange={handleSignupChange}
                     required
                   />
@@ -124,9 +122,9 @@ export default function AuthPage() {
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
                     id="lastName"
-                    name="lastName"
+                    name="lastname"
                     placeholder="Doe"
-                    value={signupData.lastName}
+                    value={signupData.lastname}
                     onChange={handleSignupChange}
                     required
                   />

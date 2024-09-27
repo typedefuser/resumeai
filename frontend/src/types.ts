@@ -32,7 +32,7 @@ personaldetails?:{
         responsibilities?: string[];
         achievements?: string[];
     }>;
-    skills?: string[]; // List of skills
+    skills?: string[]; 
     certifications?: Array<{
         certificationName?: string;
         issuingOrganization?: string;
@@ -59,7 +59,7 @@ export interface FormviewProps{
     formdata:Formdata;
     onFormChange:(data:Formdata)=>void;
     onSectionsChange: (sections: string[]) => void;
-    generatePDF: (formdata:Formdata) => void; // Add this line
+    generatePDF: (formdata:Formdata) => void; 
 }
 
 export interface PdfViewerProps {
@@ -134,3 +134,12 @@ export const FORM_SECTIONS: string[] = [
       { name: 'proficiency', placeholder: 'Proficiency' }
     ]
   };
+
+
+export interface Login_Error{
+  errors:Array<string>;
+  message:string;
+  status:string;
+  timestamp:string;
+  
+}

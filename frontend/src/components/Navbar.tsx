@@ -3,9 +3,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { FileText } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { Button } from "./ui/button"
+import { Link, useNavigate } from "react-router-dom"; 
+import { logout } from "../services/apiservices/loginservice";
 
 const Navbar = ()=> {
-    
+  const navigate=useNavigate();
+    const handleLogout=async ()=>{
+        await logout();
+        navigate('/')      
+    }
   
   return (
     <nav className="bg-white shadow-sm">
@@ -30,9 +36,11 @@ const Navbar = ()=> {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/dashboard">Dashboard</Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
