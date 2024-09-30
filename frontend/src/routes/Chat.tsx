@@ -36,7 +36,7 @@ export default function Chat({ messages, onMessagesChange }: ChatProps) {
 
     const client = new Client({
       webSocketFactory: () => socket,
-      onConnect: (frame) => {
+      onConnect: () => {
         setIsConnected(true);
         client.subscribe('/topic/messages', (message) => {
           console.log('Received message:', message.body);
