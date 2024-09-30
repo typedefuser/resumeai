@@ -35,6 +35,26 @@ export const  getResumesbyUserId= async (userId:number): Promise<ResumeDash[]>=>
         throw error; 
     }
 }
+export const  getResumebyResumeId= async (ResumeId:string):Promise<FormData>=>{
+    try{
+        const URL=`${apiBaseURL}/resume/get/${ResumeId}`
+        const response= await axios.get(URL,{
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        if(response.status==200){
+            return response.data
+        }else{
+            throw new Error(`getresumeuserid failed:${response.status}`)
+        }
+
+    }catch (error) {
+        console.error('Error Fetching resumes:', error);
+        throw error; 
+    }
+}
 export const createResumebyUserId= async (userId:string,resumeName:string)=>{
     try{
         const URL=`${apiBaseURL}/resume/create`
@@ -74,6 +94,7 @@ export const deleteResumebyId = async (resumeId: number) => {
         throw error;
     }
 };
+
 const colors = [
     'bg-blue-500',
     'bg-green-500',

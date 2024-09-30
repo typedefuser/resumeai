@@ -1,5 +1,5 @@
 export interface Formdata {
-personaldetails?:{
+personalDetails?:{
     firstname?: string;
     lastname?: string;
     email?: string;
@@ -55,6 +55,25 @@ personaldetails?:{
 }
 
 
+export const convertNullToUndefined = (obj: any): any => {
+  if (obj === null) return undefined;
+  if (typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(convertNullToUndefined);
+  
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key, convertNullToUndefined(value)])
+  );
+};
+export const convertNullToEmptyString = (obj: any): any => {
+  if (obj === null) return '';
+  if (typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(convertNullToEmptyString);
+  
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key, convertNullToEmptyString(value)])
+  );
+};
+
 export interface FormviewProps{
     formdata:Formdata;
     onFormChange:(data:Formdata)=>void;
@@ -68,7 +87,7 @@ export interface PdfViewerProps {
 
  
 export const FORM_SECTIONS: string[] = [
-    'personaldetails',
+    'personalDetails',
     'address',
     'education',
     'experience',
@@ -79,7 +98,7 @@ export const FORM_SECTIONS: string[] = [
   ];
   
   export const SUBTYPE_FIELDS: Record<string, { name: string; placeholder: string }[]> = {
-    personaldetails: [
+    personalDetails: [
       { name: 'firstname', placeholder: 'First Name' },
       { name: 'lastname', placeholder: 'Last Name' },
       { name: 'email', placeholder: 'Email' },

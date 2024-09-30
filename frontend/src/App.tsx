@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Home from './routes/home'
 import AuthPage from './routes/auth'
 import Dashboard from './routes/dashboard'
+import { UserProvider } from './UserContext'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = localStorage.getItem('token');
@@ -10,6 +11,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
+    <UserProvider>
     <Router>
       <Routes>
         <Route path="/" element={<AuthPage />} />
@@ -21,14 +23,15 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        <Route path="home" element={
+        <Route path="home/:resumeId" element={
           <ProtectedRoute>
             <Home/>
           </ProtectedRoute>
           } />
       </Routes>
     </Router>
-  )
+    </UserProvider>
+  );
 }
 
 export default App

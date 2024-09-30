@@ -5,11 +5,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "./ui/button"
 import { Link, useNavigate } from "react-router-dom"; 
 import { logout } from "../services/apiservices/loginservice";
+import {useUser} from '../UserContext'
 
 const Navbar = ()=> {
+  const {logout_context}=useUser();
   const navigate=useNavigate();
     const handleLogout=async ()=>{
         await logout();
+        logout_context();
         navigate('/')      
     }
   

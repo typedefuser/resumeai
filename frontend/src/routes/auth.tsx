@@ -7,9 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import {login,LoginData,SignupData} from '../services/apiservices/loginservice'
 import { useNavigate } from 'react-router-dom'
 import {Login_Error} from '../types'
+import { useUser } from '../UserContext'
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
+  const {login_context}= useUser()
   const [_, setError] = useState<Login_Error>({
     errors:[],
     message:'',
@@ -53,6 +55,9 @@ export default function AuthPage() {
         const result = await login(data, isLogin);
         if(result.token){
           localStorage.setItem('token', result.token);
+        }
+        if(result.user){
+          login_context(result.user)
         }
         
         isLogin?navigate('/dashboard'):!isLogin;
