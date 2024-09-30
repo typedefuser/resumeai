@@ -4,6 +4,7 @@ import com.backend.resumeai.auth.service.MyUserDetailsService;
 import com.backend.resumeai.config.jwt.JwtRequestFilter;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -52,10 +53,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://resumeai-weld.vercel.app", "http://localhost:5173")); 
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
-        configuration.setAllowedHeaders(Arrays.asList("*")); 
-        configuration.setAllowCredentials(true); 
+        configuration.setAllowedOrigins(Arrays.asList("https://resumeai-weld.vercel.app", "http://localhost:5173"));
+        //configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

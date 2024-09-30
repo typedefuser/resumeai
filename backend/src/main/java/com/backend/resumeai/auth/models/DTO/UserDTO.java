@@ -1,4 +1,4 @@
-package com.backend.resumeai.auth.models;
+package com.backend.resumeai.auth.models.DTO;
 
 public class UserDTO {
 

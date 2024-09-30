@@ -1,9 +1,10 @@
 package com.backend.resumeai.auth.service;
 
+import com.backend.resumeai.auth.models.DTO.UserProjection;
 import com.backend.resumeai.auth.models.LoginRequest;
 import com.backend.resumeai.auth.models.Password;
 import com.backend.resumeai.auth.models.User;
-import com.backend.resumeai.auth.models.UserDTO;
+import com.backend.resumeai.auth.models.DTO.UserDTO;
 import com.backend.resumeai.auth.repository.PasswordRepository;
 import com.backend.resumeai.auth.repository.UserRepository;
 import com.backend.resumeai.exception.users.InvalidCredentialsException;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -57,19 +59,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Long login(LoginRequest loginRequest) {
-        User user = userRepository.findByEmail(loginRequest.getEmail());
+    public UserProjection login(LoginRequest loginRequest) {
+        UserProjection user = userRepository.findProjectionByEmail(loginRequest.getEmail());
 
         if (user == null) {
             throw new InvalidCredentialsException("User not found with the provided email");
         }
 
 
-        Password passwordEntity = user.getPasswordEntity();
-        if (passwordEntity == null || !passwordEncoder.matches(loginRequest.getPassword(), passwordEntity.getHashedPassword())) {
+        Password passwordEntity=passwordRepository.findById(user.getUserId()).get();
+        if (!passwordEncoder.matches(loginRequest.getPassword(), passwordEntity.getHashedPassword())) {
             throw new InvalidCredentialsException("Incorrect password for the provided email");
         }
 
-        return user.getUserId();
+        return user;
     }
 }

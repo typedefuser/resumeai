@@ -1,8 +1,9 @@
 package com.backend.resumeai.auth.controller;
 
 
+import com.backend.resumeai.auth.models.DTO.UserProjection;
 import com.backend.resumeai.auth.models.LoginRequest;
-import com.backend.resumeai.auth.models.UserDTO;
+import com.backend.resumeai.auth.models.DTO.UserDTO;
 import com.backend.resumeai.config.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +37,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String,Object>> validateUser(@RequestBody LoginRequest loginRequest){
         Map<String,Object> response=new HashMap<>();
-        Long userId=userService.login(loginRequest);
+        UserProjection user=userService.login(loginRequest);
         String jwtToken=jwtUtil.generateToken(loginRequest.getEmail());
         response.put("token",jwtToken);
-        response.put("user_id",userId);
+        response.put("user",user);
         response.put("success",true);
         return ResponseEntity.ok(response);
     }

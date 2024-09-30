@@ -2,6 +2,7 @@ package com.backend.resumeai.controller;
 
 
 import com.backend.resumeai.models.DTO.CreateResumeDTO;
+import com.backend.resumeai.models.DTO.ResumeResponse;
 import com.backend.resumeai.models.Resume;
 import com.backend.resumeai.models.respnose.CreateResumeResponse;
 import com.backend.resumeai.repository.ResumeProjection;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/resume")
@@ -47,5 +47,11 @@ public class ResumeController {
     public ResponseEntity<String> deletebyResumeId(@PathVariable Long resumeId) {
         resumeService.deletebyResumeId(resumeId);
         return ResponseEntity.ok("RESUME DELETED");
+    }
+
+    @GetMapping("/get/{resumeId}")
+    public ResponseEntity<ResumeResponse> getResumebyId(@PathVariable Long resumeId){
+        ResumeResponse resume = resumeService.getResumebyId(resumeId);
+        return ResponseEntity.ok(resume);
     }
 }
