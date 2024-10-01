@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-
+const chartURL=import.meta.env.VITE_CHAT_URL
 interface ChatMessage {
   type: 'user' | 'response' | 'stream' | 'error' | 'streamComplete' | 'info';
   content: string;
@@ -25,7 +25,7 @@ export default function Chat({ messages, onMessagesChange }: ChatProps) {
   useEffect(scrollToBottom, [messages]);
 
   useEffect(() => {
-    const dev = 'http://localhost:8080/ws/chat';
+    const dev = chartURL||'http://localhost:8080/ws/chat';
     const token = localStorage.getItem('token');
 
     const socket = new SockJS(dev,{
