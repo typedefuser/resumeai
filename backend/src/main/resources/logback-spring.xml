@@ -1,5 +1,5 @@
 <configuration>
-    <!-- Define a console appender (optional) -->
+    <!-- Define a console appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
@@ -14,13 +14,13 @@
         </encoder>
     </appender>
 
-    <!-- Log levels -->
+    <!-- Log levels for specific classes -->
     <logger name="org.springframework.web.client.RestTemplate" level="DEBUG" />
     <logger name="org.springframework.http.client" level="DEBUG" />
     <logger name="org.springframework.web.reactive.function.client.WebClient" level="DEBUG" />
 
     <!-- Root logger configuration -->
-    <root level="info">
+    <root level="DEBUG"> <!-- Set to DEBUG to capture all logs -->
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>

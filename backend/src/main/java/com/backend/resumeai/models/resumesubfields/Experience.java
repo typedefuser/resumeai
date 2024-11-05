@@ -25,11 +25,9 @@ public class Experience {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL)
-    private Set<Responsibility> responsibilities;
+    private String responsibilities;
 
-    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL)
-    private Set<Achievement> achievements;
+    private String achievements;
 
     // Getters and setters
 
@@ -41,19 +39,19 @@ public class Experience {
         this.experienceId = experienceId;
     }
 
-    public Set<Achievement> getAchievements() {
+    public String getAchievements() {
         return achievements;
     }
 
-    public void setAchievements(Set<Achievement> achievements) {
+    public void setAchievements(String achievements) {
         this.achievements = achievements;
     }
 
-    public Set<Responsibility> getResponsibilities() {
+    public String getResponsibilities() {
         return responsibilities;
     }
 
-    public void setResponsibilities(Set<Responsibility> responsibilities) {
+    public void setResponsibilities(String responsibilities) {
         this.responsibilities = responsibilities;
     }
 

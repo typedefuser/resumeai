@@ -1,10 +1,10 @@
 package com.backend.resumeai.repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ResumeProjection {
     Long getResumeId();
-    LocalDate getLastModified();
+    LocalDateTime getLastModified();
     String getresumeName();
 
 }

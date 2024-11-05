@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -34,7 +34,7 @@ public class Resume {
     private String state;
     private String postalCode;
     private String country;
-    private LocalDate lastModified;
+    private LocalDateTime lastModified;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -63,11 +63,11 @@ public class Resume {
     // Getters and setters
 
 
-    public LocalDate getLastModified() {
+    public LocalDateTime getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(LocalDate lastModified) {
+    public void setLastModified(LocalDateTime lastModified) {
         this.lastModified = lastModified;
     }
 

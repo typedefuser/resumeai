@@ -90,4 +90,8 @@ public class Education {
     public void setResume(Resume resume) {
         this.resume = resume;
     }
+
+    public Long getId() {
+        return educationId;
+    }
 }

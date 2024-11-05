@@ -1,14 +1,15 @@
 package com.backend.resumeai.models.respnose;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class CreateResumeResponse {
     private Long userId;
     private String resumeName;
     private Long resumeId;
-    private LocalDate lastModified;
+    private LocalDateTime lastModified;
 
-    public CreateResumeResponse(Long userId, String resumeName, Long resumeId,LocalDate lastModified) {
+    public CreateResumeResponse(Long userId, String resumeName, Long resumeId, LocalDateTime lastModified) {
         this.userId = userId;
         this.resumeName = resumeName;
         this.resumeId = resumeId;
@@ -40,11 +41,11 @@ public class CreateResumeResponse {
         this.resumeId = resumeId;
     }
 
-    public LocalDate getLastModified() {
+    public LocalDateTime getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(LocalDate lastModified) {
+    public void setLastModified(LocalDateTime lastModified) {
         this.lastModified = lastModified;
     }
 }

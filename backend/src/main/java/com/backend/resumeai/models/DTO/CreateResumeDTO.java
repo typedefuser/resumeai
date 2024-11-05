@@ -1,14 +1,13 @@
 package com.backend.resumeai.models.DTO;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class CreateResumeDTO {
     private String email;
     private String resumeName;
-    private final LocalDate lastModified;
+    private final LocalDateTime lastModified;
 
-
-    public CreateResumeDTO(String resumeName, String email,LocalDate lastModified) {
+    public CreateResumeDTO(String resumeName, String email,LocalDateTime lastModified) {
         this.resumeName = resumeName;
         this.email = email;
         this.lastModified=lastModified;
@@ -32,7 +31,7 @@ public class CreateResumeDTO {
         this.email = email;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return lastModified;
     }
 }

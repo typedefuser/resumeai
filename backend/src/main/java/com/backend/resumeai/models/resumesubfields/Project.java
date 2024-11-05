@@ -2,6 +2,8 @@ package com.backend.resumeai.models.resumesubfields;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import  jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.backend.resumeai.models.Resume;
@@ -25,8 +27,7 @@ public class Project {
     private LocalDate endDate;
     private String link;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    private Set<ProjectTechnology> technologies;
+    private List<String> technologiesUsed;
 
 //getters and setters
 
@@ -86,11 +87,11 @@ public class Project {
         this.link = link;
     }
 
-    public Set<ProjectTechnology> getTechnologies() {
-        return technologies;
+    public List<String> getTechnologies() {
+        return technologiesUsed;
     }
 
-    public void setTechnologies(Set<ProjectTechnology> technologies) {
-        this.technologies = technologies;
+    public void setTechnologies(List<String> technologies) {
+        this.technologiesUsed = technologies;
     }
 }

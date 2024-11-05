@@ -1,6 +1,8 @@
 package com.backend.resumeai.models.DTO;
 
 import com.backend.resumeai.models.resumesubfields.*;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class ResumeResponse {
@@ -12,7 +14,16 @@ public class ResumeResponse {
     private Set<Certification> certifications;
     private Set<Project> projects;
     private Set<Language> languages;
+    private LocalDateTime lastModified;
     // Nested classes
+
+    public LocalDateTime getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(LocalDateTime lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public static class PersonalDetails {
         private String firstname;
@@ -160,7 +171,8 @@ public class ResumeResponse {
         }
     }
 
-    public ResumeResponse(Set<Project> projects, Set<Language> languages, Set<Certification> certifications, Set<Skill> skills, Set<Experience> experiences, Set<Education> educations, Address address, PersonalDetails personalDetails) {
+    public ResumeResponse(Set<Project> projects, Set<Language> languages, Set<Certification> certifications, Set<Skill> skills, Set<Experience> experiences, Set<Education> educations, Address address, PersonalDetails personalDetails
+            ,LocalDateTime lastModified) {
         this.projects = projects;
         this.languages = languages;
         this.certifications = certifications;
@@ -169,6 +181,7 @@ public class ResumeResponse {
         this.educations = educations;
         this.address = address;
         this.personalDetails = personalDetails;
+        this.lastModified=lastModified;
     }
 
 

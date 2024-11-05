@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/resume")
@@ -54,4 +55,10 @@ public class ResumeController {
         ResumeResponse resume = resumeService.getResumebyId(resumeId);
         return ResponseEntity.ok(resume);
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateResume(@PathVariable Long id, @RequestBody ResumeResponse updates) {
+         resumeService.updateResume(id,updates);
+        return ResponseEntity.ok("RESUME UPDATED");
+    }
+
 }
